@@ -28,8 +28,15 @@ def get_products_by_category():
         idtuple = cursor.fetchone()
         if idtuple:
             id = idtuple[0]
-            print(id)
-            dic = {'message': "Sucess"}
+            #print(id)
+            sql = f"SELECT id, name, url_image, price, discount, category FROM product WHERE category = '{id}'"
+            cursor.execute(sql)
+            datos = cursor.fetchall()
+            dic = {'message': "Sucess", 'products':[]}
+            for element in datos:
+                d = {'id':element[0], 'name':element[1], 'url_image':element[2], 'price':element[3], 'discount':element[4], 'category':element[5]}
+                dic['products'].append(d)
+            print(dic)
         else:
             dic = {'message':"Category not found"}
         return jsonify(dic)
