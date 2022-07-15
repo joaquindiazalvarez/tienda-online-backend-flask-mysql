@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request, jsonify
 from flask_mysqldb import MySQL
 
 from config import config
@@ -18,6 +18,26 @@ def list_products():
         return "products listed"
     except Exception as ex:
         return "Error"
+@app.route('/categories/getbycategory', methods = ['GET'])
+def get_products_by_category():
+    body = request.get_json()
+    cursor=conexion.connection.cursor()
+    if body['category']:
+        sql = f"SELECT id FROM category WHERE name = '{body['category']}'"
+        cursor.execute(sql)
+        idtuple = cursor.fetchone()
+        if idtuple:
+            id = idtuple[0]
+            print(id)
+            dic = {'message': "Sucess"}
+        else:
+            dic = {'message':"Category not found"}
+        return jsonify(dic)
+        
+    else: 
+        return "not ok"
+
+        
 
 def page_not_found(error):
     return "<h1>The page that you're looking for was not found ...</h1>"
