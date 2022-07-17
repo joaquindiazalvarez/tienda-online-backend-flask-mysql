@@ -31,7 +31,6 @@ def list_products():
     return jsonify(dic)
     
 @app.route('/categories/getbycategory', methods = ['POST'])
-@cross_origin
 def get_products_by_category():
     body = request.get_json()
     cursor=conexion.connection.cursor()
