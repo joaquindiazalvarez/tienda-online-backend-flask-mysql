@@ -1,11 +1,12 @@
 from flask import Flask, request, jsonify
 from flask_mysqldb import MySQL
 from flask_cors import CORS, cross_origin
-import json
+
 
 from config import config
 
 app = Flask(__name__)
+cors = CORS(app)
 
 # Config MySQL
 app.config['MYSQL_HOST'] = 'mdb-test.c6vunyturrl6.us-west-1.rds.amazonaws.com'
@@ -30,6 +31,7 @@ def list_products():
     return jsonify(dic)
     
 @app.route('/categories/getbycategory', methods = ['POST'])
+@cross_origin
 def get_products_by_category():
     body = request.get_json()
     cursor=conexion.connection.cursor()
