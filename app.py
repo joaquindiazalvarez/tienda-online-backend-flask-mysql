@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_mysqldb import MySQL
 from flask_cors import CORS, cross_origin
+import json
 
 from config import config
 
@@ -19,7 +20,7 @@ def list_products():
         print(datos)
         return "products listed"
     except Exception as ex:
-        return "Error"
+        return json.dumps(ex)
 @app.route('/categories/getbycategory', methods = ['POST'])
 def get_products_by_category():
     body = request.get_json()
