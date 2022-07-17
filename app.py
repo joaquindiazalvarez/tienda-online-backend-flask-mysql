@@ -23,8 +23,11 @@ def list_products():
     sql = "SELECT id, name, url_image, price, discount, category FROM product"
     cursor.execute(sql)
     datos=cursor.fetchall()
-    print(datos)
-    return "products listed"
+    dic = {'message': "Sucess", 'products':datos}
+    #for element in datos:
+        #d = {'id':element[0], 'name':element[1], 'url_image':element[2], 'price':element[3], 'discount':element[4], 'category':element[5]}
+        #dic['products'].append(d)
+    return jsonify(dic)
     
 @app.route('/categories/getbycategory', methods = ['POST'])
 def get_products_by_category():
@@ -35,15 +38,11 @@ def get_products_by_category():
         cursor.execute(sql)
         idtuple = cursor.fetchone()
         if idtuple:
-            id = idtuple[0]
-            #print(id)
+            id = idtuple['id']
             sql = f"SELECT id, name, url_image, price, discount, category FROM product WHERE category = '{id}'"
             cursor.execute(sql)
             datos = cursor.fetchall()
-            dic = {'message': "Sucess", 'products':[]}
-            for element in datos:
-                d = {'id':element[0], 'name':element[1], 'url_image':element[2], 'price':element[3], 'discount':element[4], 'category':element[5]}
-                dic['products'].append(d)
+            dic = {'message': "Sucess", 'products':datos}
             print(dic)
         else:
             dic = {'message':"Category not found"}
