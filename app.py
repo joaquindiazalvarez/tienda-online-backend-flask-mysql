@@ -44,7 +44,20 @@ def get_products_by_category():
         return jsonify(dic)
         
     else: 
-        return "not ok"
+        return "you must specify a category"
+
+""" @app.route('/getbyid/<int:id>', methods = ['GET'])
+def get_product_by_index(id):
+    cursor = conexion.connection.cursor()
+    sql = f"SELECT id, name, url_image, price, discount, category FROM product WHERE id = '{id}'"
+    cursor.execute(sql)
+    dato = cursor.fetchone()
+    if dato is None:
+        return "Product not found"
+    dic = {'id': dato[0], 'name': dato[1], 'url_image': dato[2], 'price': dato[3], 'discount': dato[4], 'category': dato[5]}
+    return jsonify(dic) """
+    
+
 
         
 
