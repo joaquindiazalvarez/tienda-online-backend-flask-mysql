@@ -33,48 +33,42 @@ def list_products():
     sql = "SELECT id, name, url_image, price, discount, category FROM product"
     cursor.execute(sql)
     datos=cursor.fetchall()
-    dic = {'message': "Sucess", 'products':datos}
-    #for element in datos:
-        #d = {'id':element[0], 'name':element[1], 'url_image':element[2], 'price':element[3], 'discount':element[4], 'category':element[5]}
-        #dic['products'].append(d)
+    dic = {'message': "Success", 'products':datos}
     return jsonify(dic)
     
 @app.route('/categories/getbycategory', methods = ['POST'])
 def get_products_by_category():
     body = request.get_json()
-    cursor=conexion.connection.cursor()
-    if body['category']:
+    cursor = conexion.connection.cursor()
+    if "category" in body:
         sql = f"SELECT id FROM category WHERE name = '{body['category']}'"
         cursor.execute(sql)
-        idtuple = cursor.fetchone()
-        if idtuple:
-            id = idtuple['id']
+        id_dic = cursor.fetchone()
+        if id_dic:
+            id = id_dic['id']
             sql = f"SELECT id, name, url_image, price, discount, category FROM product WHERE category = '{id}'"
             cursor.execute(sql)
             datos = cursor.fetchall()
-            dic = {'message': "Sucess", 'products':datos}
-            print(dic)
+            dic = {'message': "Success", 'products':datos}
         else:
-            dic = {'message':"Category not found"}
+            dic = {'message':"category not found"}
         return jsonify(dic)
         
     else: 
         return "you must specify a category"
 
-""" @app.route('/getbyid/<int:id>', methods = ['GET'])
-def get_product_by_index(id):
+@app.route('/search', methods = ['POST']) 
+def search():
+    body = request.get_json()  
     cursor = conexion.connection.cursor()
-    sql = f"SELECT id, name, url_image, price, discount, category FROM product WHERE id = '{id}'"
-    cursor.execute(sql)
-    dato = cursor.fetchone()
-    if dato is None:
-        return "Product not found"
-    dic = {'id': dato[0], 'name': dato[1], 'url_image': dato[2], 'price': dato[3], 'discount': dato[4], 'category': dato[5]}
-    return jsonify(dic) """
-    
-
-
-        
+    if "search" in body:
+        sql = f"SELECT id, name, url_image, price, discount, category FROM product WHERE name LIKE '%{body['search']}%'"
+        cursor.execute(sql)
+        datos = cursor.fetchall()
+        dic = {'messagge': "Success", 'products': datos}
+    else:
+        dic = {'message': "you must specify a search string"}
+    return jsonify(dic)
 
 def page_not_found(error):
     return "<h1>The page that you're looking for was not found ...</h1>"
