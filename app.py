@@ -59,12 +59,20 @@ def get_products_by_category():
 
 @app.route('/search', methods = ['POST']) 
 def search():
+    map = {"bebida energetica": 1, "pisco": 2, "ron": 3, "bebida": 4, "snack":5, "cerveza":6, "vodka":7, "todos": "category"}
     body = request.get_json()  
+    category = map[body['category']]
     cursor = conexion.connection.cursor()
+    sql = "SELECT name FROM category"
+    cursor.execute(sql)
+    datos = cursor.fetchall()
+    print(datos)
     if "search" in body:
-        sql = f"SELECT id, name, url_image, price, discount, category FROM product WHERE name LIKE '%{body['search']}%'"
+        sql = f"SELECT id, name, url_image, price, discount, category FROM product WHERE name LIKE '%{body['search']}%' AND category = {category}"
         cursor.execute(sql)
         datos = cursor.fetchall()
+        if not datos:
+            return jsonify({'message': "0 Results", 'products':[]})
         dic = {'messagge': "Success", 'products': datos}
     else:
         dic = {'message': "you must specify a search string"}
