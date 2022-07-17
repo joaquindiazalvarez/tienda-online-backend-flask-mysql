@@ -1,6 +1,9 @@
 from flask import Flask, request, jsonify
 from flask_mysqldb import MySQL
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
 
 from config import config
@@ -8,12 +11,18 @@ from config import config
 app = Flask(__name__)
 cors = CORS(app)
 
+
+
+HOST = os.getenv("HOST")
+USER = os.getenv("USER")
+PASSWORD = os.getenv("PASSWORD")
+DB = os.getenv("DB")
 # Config MySQL
-app.config['MYSQL_HOST'] = 'mdb-test.c6vunyturrl6.us-west-1.rds.amazonaws.com'
-app.config['MYSQL_USER'] = 'bsale_test'
+app.config['MYSQL_HOST'] = HOST
+app.config['MYSQL_USER'] = USER
 app.config['MYSQL_PORT'] = 3306
-app.config['MYSQL_PASSWORD'] = 'bsale_test'
-app.config['MYSQL_DB'] = 'bsale_test'
+app.config['MYSQL_PASSWORD'] = PASSWORD
+app.config['MYSQL_DB'] = DB
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 conexion = MySQL(app)
