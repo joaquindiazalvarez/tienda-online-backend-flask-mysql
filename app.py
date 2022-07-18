@@ -36,13 +36,14 @@ def list_products():
     cursor=conexion.connection.cursor()
     sql = "SELECT id, name, url_image, price, discount, category FROM product"
     cursor.execute(sql)
-    datos=cursor.fetchall()
-    dic = {'message': "Success", 'products':datos}
+    data=cursor.fetchall()
+    dic = {'message': "Success", 'products':data}
     return jsonify(dic)
     
-@app.route('/categories/getbycategory/', methods = ['POST'])
-def get_products_by_category():
+@app.route('/categories/getbycategory/<int:page>/', methods = ['POST'])
+def get_products_by_category(page):
     body = request.get_json()
+    page_limit = 12
     cursor = conexion.connection.cursor()
     if "category" in body and "order" in body:
         if body['order'] == "az":
@@ -60,8 +61,14 @@ def get_products_by_category():
         if body['category'] == "todos":
             sql = sql = f"SELECT id, name, url_image, price, discount, category FROM product ORDER BY {parameter} {order}"
             cursor.execute(sql)
-            datos = cursor.fetchall()
-            dic = {'message': "Success", 'products': datos}
+            data = cursor.fetchall()
+            first_element = (page - 1)* page_limit
+            last_element = (page * page_limit)
+            data_cut = data[first_element:last_element]
+            dic = {'message': "Success", 'products': data_cut, 'pages': len(data)//page_limit + 1}
+            if page < 1 or page > dic['pages']:
+                dic = {'message': "Page out of range"}
+                return jsonify(dic)
             return jsonify(dic)
         sql = f"SELECT id FROM category WHERE name = '{body['category']}'"
         cursor.execute(sql)
@@ -70,8 +77,10 @@ def get_products_by_category():
             id = id_dic['id']
             sql = f"SELECT id, name, url_image, price, discount, category FROM product WHERE category = '{id}' ORDER BY {parameter} {order}"
             cursor.execute(sql)
-            datos = cursor.fetchall()
-            dic = {'message': "Success", 'products': datos}
+            data = cursor.fetchall()
+            data_cut = data[(page - 1 * page_limit):((page * page_limit) - 1)]
+            print(data_cut)
+            dic = {'message': "Success", 'products': data_cut, 'pages':len(data)//page_limit + 1}
         else:
             dic = {'message':"category not found"}
         return jsonify(dic)
@@ -80,17 +89,14 @@ def get_products_by_category():
         dic = {'message': "you must specify a category and an order"}
         return jsonify(dic)
 
-@app.route('/search', methods = ['POST']) 
-def search():
+@app.route('/search/<int:page>/', methods = ['POST']) 
+def search(page):
+    page_limit = 12
     map = {"bebida energetica": 1, "pisco": 2, "ron": 3, "bebida": 4, "snack":5, "cerveza":6, "vodka":7, "todos": "category"}
     body = request.get_json()  
     category = map[body['category']]
     if category:
         cursor = conexion.connection.cursor()
-        #sql = "SELECT name FROM category"
-        #cursor.execute(sql)
-        #datos = cursor.fetchall()
-        #print(datos)
         if "search" in body and "order" in body:
             if body['order'] == "az":
                 parameter = "name"
@@ -106,10 +112,13 @@ def search():
                 order = "DESC"
             sql = f"SELECT id, name, url_image, price, discount, category FROM product WHERE name LIKE '%{body['search']}%' AND category = {category} ORDER BY {parameter} {order}"
             cursor.execute(sql)
-            datos = cursor.fetchall()
-            if not datos:
+            data = cursor.fetchall()
+            if not data:
                 return jsonify({'message': "0 Results", 'products':[]})
-            dic = {'messagge': "Success", 'products': datos}
+            first_element = (page - 1)* page_limit
+            last_element = (page * page_limit)
+            data_cut = data[first_element:last_element]
+            dic = {'messagge': "Success", 'products': data_cut, 'pages':len(data)//page_limit + 1}
         else:
             dic = {'message': "you must specify a search stringand an order"}
     else:
