@@ -40,14 +40,11 @@ def list_products():
     dic = {'message': "Success", 'products':datos}
     return jsonify(dic)
     
-@app.route('/categories/getbycategory', methods = ['POST'])
+@app.route('/categories/getbycategory/', methods = ['POST'])
 def get_products_by_category():
     body = request.get_json()
     cursor = conexion.connection.cursor()
-    if "category" in body:
-        sql = f"SELECT id FROM category WHERE name = '{body['category']}'"
-        cursor.execute(sql)
-        id_dic = cursor.fetchone()
+    if "category" in body and "order" in body:
         if body['order'] == "az":
             parameter = "name"
             order = "ASC"
@@ -60,38 +57,63 @@ def get_products_by_category():
         elif body['order'] == "pricemay":
             parameter = "price"
             order = "DESC"
+        if body['category'] == "todos":
+            sql = sql = f"SELECT id, name, url_image, price, discount, category FROM product ORDER BY {parameter} {order}"
+            cursor.execute(sql)
+            datos = cursor.fetchall()
+            dic = {'message': "Success", 'products': datos}
+            return jsonify(dic)
+        sql = f"SELECT id FROM category WHERE name = '{body['category']}'"
+        cursor.execute(sql)
+        id_dic = cursor.fetchone()
         if id_dic:
             id = id_dic['id']
             sql = f"SELECT id, name, url_image, price, discount, category FROM product WHERE category = '{id}' ORDER BY {parameter} {order}"
             cursor.execute(sql)
             datos = cursor.fetchall()
-            dic = {'message': "Success", 'products':datos}
+            dic = {'message': "Success", 'products': datos}
         else:
             dic = {'message':"category not found"}
         return jsonify(dic)
         
     else: 
-        return "you must specify a category"
+        dic = {'message': "you must specify a category and an order"}
+        return jsonify(dic)
 
 @app.route('/search', methods = ['POST']) 
 def search():
     map = {"bebida energetica": 1, "pisco": 2, "ron": 3, "bebida": 4, "snack":5, "cerveza":6, "vodka":7, "todos": "category"}
     body = request.get_json()  
     category = map[body['category']]
-    cursor = conexion.connection.cursor()
-    sql = "SELECT name FROM category"
-    cursor.execute(sql)
-    datos = cursor.fetchall()
-    print(datos)
-    if "search" in body:
-        sql = f"SELECT id, name, url_image, price, discount, category FROM product WHERE name LIKE '%{body['search']}%' AND category = {category}"
-        cursor.execute(sql)
-        datos = cursor.fetchall()
-        if not datos:
-            return jsonify({'message': "0 Results", 'products':[]})
-        dic = {'messagge': "Success", 'products': datos}
+    if category:
+        cursor = conexion.connection.cursor()
+        #sql = "SELECT name FROM category"
+        #cursor.execute(sql)
+        #datos = cursor.fetchall()
+        #print(datos)
+        if "search" in body and "order" in body:
+            if body['order'] == "az":
+                parameter = "name"
+                order = "ASC"
+            elif body['order'] == "za":
+                parameter = "name"
+                order = "DESC"
+            elif body['order'] == "pricemin":
+                parameter = "price"
+                order = "ASC"
+            elif body['order'] == "pricemay":
+                parameter = "price"
+                order = "DESC"
+            sql = f"SELECT id, name, url_image, price, discount, category FROM product WHERE name LIKE '%{body['search']}%' AND category = {category} ORDER BY {parameter} {order}"
+            cursor.execute(sql)
+            datos = cursor.fetchall()
+            if not datos:
+                return jsonify({'message': "0 Results", 'products':[]})
+            dic = {'messagge': "Success", 'products': datos}
+        else:
+            dic = {'message': "you must specify a search stringand an order"}
     else:
-        dic = {'message': "you must specify a search string"}
+        dic = {'message': "you must specify a category"}
     return jsonify(dic)
 
 def page_not_found(error):
