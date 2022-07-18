@@ -65,7 +65,7 @@ def get_products_by_category(page):
             first_element = (page - 1)* page_limit
             last_element = (page * page_limit)
             data_cut = data[first_element:last_element]
-            dic = {'message': "Success", 'products': data_cut, 'pages': len(data)//page_limit + 1}
+            dic = {'message': "Success", 'products': data_cut, 'pages': len(data)//page_limit + 1, 'products_length':len(data)}
             if page < 1 or page > dic['pages']:
                 dic = {'message': "Page out of range"}
                 return jsonify(dic)
@@ -78,9 +78,14 @@ def get_products_by_category(page):
             sql = f"SELECT id, name, url_image, price, discount, category FROM product WHERE category = '{id}' ORDER BY {parameter} {order}"
             cursor.execute(sql)
             data = cursor.fetchall()
-            data_cut = data[(page - 1 * page_limit):((page * page_limit) - 1)]
-            print(data_cut)
-            dic = {'message': "Success", 'products': data_cut, 'pages':len(data)//page_limit + 1}
+            first_element = (page - 1)* page_limit
+            last_element = (page * page_limit)
+            data_cut = data[first_element:last_element]
+            dic = {'message': "Success", 'products': data_cut, 'pages':len(data)//page_limit + 1, 'products_length':len(data)}
+            if page < 1 or page > dic['pages']:
+                dic = {'message': "Page out of range"}
+                return jsonify(dic)
+            return jsonify(dic)
         else:
             dic = {'message':"category not found"}
         return jsonify(dic)
@@ -118,7 +123,11 @@ def search(page):
             first_element = (page - 1)* page_limit
             last_element = (page * page_limit)
             data_cut = data[first_element:last_element]
-            dic = {'messagge': "Success", 'products': data_cut, 'pages':len(data)//page_limit + 1}
+            dic = {'messagge': "Success", 'products': data_cut, 'pages':len(data)//page_limit + 1, 'products_length':len(data)}
+            if page < 1 or page > dic['pages']:
+                dic = {'message': "Page out of range"}
+                return jsonify(dic)
+            return jsonify(dic)
         else:
             dic = {'message': "you must specify a search stringand an order"}
     else:
