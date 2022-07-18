@@ -48,9 +48,21 @@ def get_products_by_category():
         sql = f"SELECT id FROM category WHERE name = '{body['category']}'"
         cursor.execute(sql)
         id_dic = cursor.fetchone()
+        if body['order'] == "az":
+            parameter = "name"
+            order = "ASC"
+        elif body['order'] == "za":
+            parameter = "name"
+            order = "DESC"
+        elif body['order'] == "pricemin":
+            parameter = "price"
+            order = "ASC"
+        elif body['order'] == "pricemay":
+            parameter = "price"
+            order = "DESC"
         if id_dic:
             id = id_dic['id']
-            sql = f"SELECT id, name, url_image, price, discount, category FROM product WHERE category = '{id}'"
+            sql = f"SELECT id, name, url_image, price, discount, category FROM product WHERE category = '{id}' ORDER BY {parameter} {order}"
             cursor.execute(sql)
             datos = cursor.fetchall()
             dic = {'message': "Success", 'products':datos}
