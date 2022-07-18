@@ -28,6 +28,10 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 conexion = MySQL(app)
 
 @app.route('/')
+def say_hello():
+    return '<h1>Hello World, this is my online-store API</h1>'
+
+@app.route('/getall', methods = ['GET'])
 def list_products():
     cursor=conexion.connection.cursor()
     sql = "SELECT id, name, url_image, price, discount, category FROM product"
