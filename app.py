@@ -45,6 +45,16 @@ def get_products_by_category(page):
     body = request.get_json()
     page_limit = 12
     cursor = conexion.connection.cursor()
+    if "discount" in body:
+        if body['discount'] == True:
+            discount = "AND discount > '0'"
+            discount_where = "WHERE discount > '0'"
+        else: 
+            discount = ""
+            discount_where = ""
+    else:
+        dic = {'message': "must specify discount"}
+        return jsonify(dic)
     if "category" in body and "order" in body:
         if body['order'] == "az":
             parameter = "name"
@@ -59,7 +69,7 @@ def get_products_by_category(page):
             parameter = "price"
             order = "DESC"
         if body['category'] == "todos":
-            sql = sql = f"SELECT id, name, url_image, price, discount, category FROM product ORDER BY {parameter} {order}"
+            sql = sql = f"SELECT id, name, url_image, price, discount, category FROM product {discount_where} ORDER BY {parameter} {order}"
             cursor.execute(sql)
             data = cursor.fetchall()
             first_element = (page - 1)* page_limit
@@ -75,7 +85,7 @@ def get_products_by_category(page):
         id_dic = cursor.fetchone()
         if id_dic:
             id = id_dic['id']
-            sql = f"SELECT id, name, url_image, price, discount, category FROM product WHERE category = '{id}' ORDER BY {parameter} {order}"
+            sql = f"SELECT id, name, url_image, price, discount, category FROM product WHERE category = '{id}' {discount} ORDER BY {parameter} {order}"
             cursor.execute(sql)
             data = cursor.fetchall()
             first_element = (page - 1)* page_limit
@@ -100,6 +110,14 @@ def search(page):
     map = {"bebida energetica": 1, "pisco": 2, "ron": 3, "bebida": 4, "snack":5, "cerveza":6, "vodka":7, "todos": "category"}
     body = request.get_json()  
     category = map[body['category']]
+    if "discount" in body:
+        if body['discount'] == True:
+            discount = "AND discount > '0'"
+        else: 
+            discount = ""
+    else:
+        dic = {'message': "must specify discount"}
+        return jsonify(dic)
     if category:
         cursor = conexion.connection.cursor()
         if "search" in body and "order" in body:
@@ -115,7 +133,7 @@ def search(page):
             elif body['order'] == "pricemay":
                 parameter = "price"
                 order = "DESC"
-            sql = f"SELECT id, name, url_image, price, discount, category FROM product WHERE name LIKE '%{body['search']}%' AND category = {category} ORDER BY {parameter} {order}"
+            sql = f"SELECT id, name, url_image, price, discount, category FROM product WHERE name LIKE '%{body['search']}%' AND category = {category} {discount} ORDER BY {parameter} {order}"
             cursor.execute(sql)
             data = cursor.fetchall()
             if not data:
