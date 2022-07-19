@@ -1,6 +1,6 @@
 # ⚡API tienda online
 ## Sobre este proyecto...
-  Este es un proyecto, el cual está dividido en frontend y backend  
+  Este es un proyecto el cual está dividido en frontend y backend  
   Este repositorio pertenece a la parte del backend (API REST)
   [pincha aquí para ir al repositorio del frontend](https://github.com/joaquindiazalvarez/tienda-online-vanillajs)
 ## Descripción...
