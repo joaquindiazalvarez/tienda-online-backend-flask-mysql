@@ -4,8 +4,8 @@
   Este repositorio pertenece a la parte del backend (API REST)  
   [pincha aquí para ir al repositorio del frontend](https://github.com/joaquindiazalvarez/tienda-online-vanillajs)
 ## Descripción...
-  Básicammente lo que hace es conectarse a una base de datos para buscar información y entragarla a través de métodos HTTP(GET y POST)  
-  La información que maneja es una lista de productos, que tienen nombre, una imágen, un precio, un descuento y una categoría  
+  Básicammente lo que hace esta app es conectarse a una base de datos para buscar información y entragarla a través de métodos HTTP(GET y POST)  
+  La información que maneja es una lista de productos, que tienen un id, nombre, una imágen, un precio, un descuento y una categoría  
 # Empezando...
 Para correr la aplicación, después de clonar el repositorio, se debe entrar a la carpeta del proyecto con:  
 
@@ -15,7 +15,7 @@ luego se debe crear un virtual enviroment idealmente con:
 
 ```$ virtualenv -p python env```    
     
-luego acceter al entorno virtual con:   
+luego acceder al entorno virtual con:   
 
 ```$ source ./env/Scripts/activate```    
     
@@ -29,7 +29,7 @@ y finalmente se puede correr la app con:
     
 # ⚡La API
 ## Descripción...
-  Para construir la api se utilizó:
+  Para construir la API se utilizó:
   - Flask 
   - flask_mysqldb para la conexión con sql
   - flask_cors para encargarse del CORS
