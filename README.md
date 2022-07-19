@@ -74,6 +74,8 @@ la API nos retorna un objeto JSON con un mensaje, el número de páginas, el nú
 ![api43](https://imagizer.imageshack.com/v2/744x509q90/r/922/wau5fG.png)  
 ![apiproductlength](https://imagizer.imageshack.com/img922/9233/quQaYi.png)  
 
+Si no se envía uno de los parametros en JSON por HTTP, nos dará un error, indicando el problema.
+
 # ⚡Arquitectura de la app
 ## Descripción
 Esta API está hecha básicamente en un solo archivo python que contiene todo el funcionamieento de la app(app.py)
