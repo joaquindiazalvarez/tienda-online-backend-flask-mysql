@@ -6,8 +6,6 @@ import os
 load_dotenv()
 
 
-from config import config
-
 app = Flask(__name__)
 cors = CORS(app)
 
@@ -155,7 +153,6 @@ def search(page):
 def page_not_found(error):
     return "<h1>The page that you're looking for was not found ...</h1>"
 
-if __name__ == '__main__':
-    app.config.from_object(config['development'])    
+if __name__ == '__main__': 
     app.register_error_handler(404, page_not_found) 
-    app.run(debug=True)
+    app.run()
