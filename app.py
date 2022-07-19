@@ -54,7 +54,7 @@ def say_hello():
 @app.route('/getall', methods = ['GET'])
 def list_products():
     """
-    Endpoint para traer todos los productos
+    Endpoint para traer todos los productos, actualmente no se utiliza en el front
     args: ninguno
     return: un JSON con todos los productos
     """
