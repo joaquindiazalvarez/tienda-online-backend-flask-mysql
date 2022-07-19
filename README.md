@@ -1,7 +1,7 @@
 # ⚡API tienda online
 ## Sobre este proyecto...
   Este es un proyecto el cual está dividido en frontend y backend  
-  Este repositorio pertenece a la parte del backend (API REST)
+  Este repositorio pertenece a la parte del backend (API REST)  
   [pincha aquí para ir al repositorio del frontend](https://github.com/joaquindiazalvarez/tienda-online-vanillajs)
 ## Descripción...
   Básicammente lo que hace es conectarse a una base de datos para buscar información y entragarla a través de métodos HTTP(GET y POST)  
